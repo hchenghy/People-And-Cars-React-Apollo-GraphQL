@@ -1,0 +1,7 @@
+{
+  "devDependencies": {},
+  "dependencies": {
+    "graphql": "^16.8.1",
+    "lodash.filter": "^4.6.0"
+  }
+}
