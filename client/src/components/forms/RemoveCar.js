@@ -4,7 +4,7 @@ import { GET_CARS, REMOVE_CAR } from '../../graphql/queries';
 import filter from 'lodash.filter';
 
 const RemoveCar = ({ id }) => {
-    const [RemoveCar] = useMutation(REMOVE_CAR, {
+    const [removeCar] = useMutation(REMOVE_CAR, {
         update(cache, { data: { removeCar } }) {
             const { car } = cache.readQuery({ query: GET_CARS });
             const filteredCar = filter(car, car => car.id !== id);

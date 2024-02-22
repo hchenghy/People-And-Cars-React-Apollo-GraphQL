@@ -21,6 +21,7 @@ const UpdatePeople = props => {
         lastName
       }
     })
+    console.log('onButtonClick called');
     props.onButtonClick()
   }
 
@@ -43,11 +44,11 @@ const UpdatePeople = props => {
       <Form.Item
         name='firstName'
         label='First Name:'
-        rules={[{ required: true, message: 'Please enter a first name' }]}
+        rules={[{ required: true, message: 'Please enter first name' }]}
       >
         <Input placeholder='i.e. John' />
       </Form.Item>
-      <Form.Item label='Last Name:' name='lastName' rules={[{ required: true, message: 'Please enter a last name' }]}>
+      <Form.Item label='Last Name:' name='lastName' rules={[{ required: true, message: 'Please enter last name' }]}>
         <Input placeholder='i.e. Smith' />
       </Form.Item>
       <Form.Item shouldUpdate={true}>
@@ -61,7 +62,7 @@ const UpdatePeople = props => {
               form.getFieldsError().filter(({ errors }) => errors.length).length
             }
           >
-            Update Contact
+            Update People
           </Button>
         )}
       </Form.Item>

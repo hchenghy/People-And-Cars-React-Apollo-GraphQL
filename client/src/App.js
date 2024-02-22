@@ -7,6 +7,9 @@ import AddPerson from './components/forms/AddPeople';
 import PeopleCard from './components/listItems/PeopleCard';
 import Subtitle from './components/layout/Subtitle';
 import AddCar from './components/forms/AddCar';
+import People from './components/lists/People'
+import UpdatePeople from './components/forms/UpdatePeople';
+import CarsOwnedByPeople from './components/lists/CarsOwnedByPeople';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -23,7 +26,9 @@ function App() {
         <Subtitle subtitle="Add Car" />
         <AddCar />
         <Subtitle subtitle="Record" />
-        <PeopleCard />
+        <People />
+        <CarsOwnedByPeople />
+
       </div>
     </ApolloProvider>
   );

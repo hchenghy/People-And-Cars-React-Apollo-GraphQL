@@ -5,7 +5,13 @@ import { UPDATE_CAR } from '../../graphql/queries'
 
 const UpdateCar = props => {
   const styles = getStyles()
-  const { id, firstName, lastName } = props
+  const { id,
+    year,
+    make,
+    model,
+    price,
+    personId
+  } = props
   const [form] = Form.useForm()
   const [, forceUpdate] = useState()
 
@@ -17,7 +23,7 @@ const UpdateCar = props => {
       make,
       model,
       price,
-      personId 
+      personId
     } = values
 
     updateCar({
