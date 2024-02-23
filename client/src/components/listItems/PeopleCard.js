@@ -47,7 +47,9 @@ const PeopleCard = ({ id, firstName, lastName }) => {
           ]}
         >
           <div>
-            <p>{firstName} {lastName}</p>
+            <div style={styles.headingBorder}>
+              <h3>{firstName} {lastName}</h3>
+            </div>
             {displayCars && (
               <div>
                 {displayCars.map(car => (
@@ -71,8 +73,14 @@ const getStyles = () => ({
   card: {
     width: '100%',
     borderRadius: '0px',
-    textAlign: 'left'
+    textAlign: 'left',
+    padding: '0',
   },
+
+  headingBorder: {
+    borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+    marginBottom: '20px',
+  }
 });
 
 export default PeopleCard;

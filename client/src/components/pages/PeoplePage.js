@@ -1,32 +1,50 @@
-import { useParams } from 'react-router-dom'
-import { List } from "antd"
-import { GET_CARS_BY_PERSONID } from "../../graphql/queries"
-import { useQuery } from "@apollo/client"
-import CarCard from "../listItems/CarCard"
+import React, { useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { List, Card } from "antd";
+import { GET_PERSON_AND_CARS } from "../../graphql/queries";
+import { useQuery } from "@apollo/client";
+import Subtitle from '../layout/Subtitle';
 
 const PeoplePage = () => {
-    const personId = useParams()
-    console.log(personId)
-    const styles = getStyles()
+    const { id: personId } = useParams();
+    const styles = getStyles();
 
-    const { loading, error, data } = useQuery(GET_CARS_BY_PERSONID, {
-        variables: { personId: personId.personId },
+    const { loading, error, data, refetch } = useQuery(GET_PERSON_AND_CARS, {
+        variables: { personId },
     });
 
-    if (loading) return 'Data loading...'
-    if (error) return `Error: ${error.message}`
+    useEffect(() => {
+        refetch(); 
+    }, [refetch, personId]);
 
-    if (!data || !data.cars || data.cars.length === 0) {
-        return <div>No cars found for this person.</div>;
-    }
+    if (loading) return 'Data loading...';
+    if (error) return `Error: ${error.message}`;
+
+    const { person } = data;
+    const cars = person.cars;
 
     return (
-        <div>
+        <div style={styles.container}>
+            <Link to="/">Back To Home</Link>
+            <Subtitle subtitle={`Cars owned by ${person.firstName} ${person.lastName}`} />
             <List grid={{ gutter: 20, column: 1 }} style={styles.list}>
-                {data.cars.map(({ id, make, model, year, price }) => (
-                    <List.Item key={id}>
-                        <CarCard id={id} make={make} model={model} year={year} price={price} />
-                    </List.Item>
+                {cars.map(car => (
+                    <Card key={car.id} style={styles.card}>
+                        <ul>
+                            <li>
+                                <strong>Model:</strong> {car.model}
+                            </li>
+                            <li>
+                                <strong>Make:</strong> {car.make}
+                            </li>
+                            <li>
+                                <strong>Year:</strong> {car.year}
+                            </li>
+                            <li>
+                                <strong>Price:</strong> ${car.price}
+                            </li>
+                        </ul>
+                    </Card>
                 ))}
             </List>
         </div>
@@ -34,10 +52,13 @@ const PeoplePage = () => {
 }
 
 const getStyles = () => ({
-    list: {
-        display: 'flex',
-        justifyContent: 'center'
+    container: {
+        padding: '3%'
+    },
+    card: {
+        borderRadius: '0',
+        marginBottom: '10px'
     }
-})
+});
 
 export default PeoplePage;

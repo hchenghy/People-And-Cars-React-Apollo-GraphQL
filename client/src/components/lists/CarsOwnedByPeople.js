@@ -19,7 +19,6 @@ const CarsOwnedByPeople = ({ personId }) => {
     }
 
 
-
     return (
         <List grid={{ gutter: 20, column: 1 }} style={styles.list}>
             {data.cars.map(({ id, make, model, year, price }) => (

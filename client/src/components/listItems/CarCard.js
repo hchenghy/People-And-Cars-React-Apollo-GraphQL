@@ -15,6 +15,10 @@ const CarCard = ({ car }) => {
         setEditMode(!editMode)
     }
 
+    const formatCurrency = (value) => {
+        return `$ ${value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    };
+
     return (
         <div>
             {editMode ? (
@@ -36,7 +40,7 @@ const CarCard = ({ car }) => {
 
                     ]}
                 >
-                    {year} {make} {model} - &gt; ${price}
+                    {year} {make} {model} - &gt; {formatCurrency(price)}
                 </Card>
             )}
         </div>
@@ -45,7 +49,6 @@ const CarCard = ({ car }) => {
 
 const getStyles = () => ({
     card: {
-        // width: '500px',
         textAlign: 'left',
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderRadius: "0",

@@ -110,9 +110,17 @@ const typeDefs = `
     personId: String!
   }
   
+  type PersonWithCars {
+    id: String!
+    firstName: String!
+    lastName: String!
+    cars: [Car!]!
+  }
+
   type Query {
     people: [People]
     car: [Car]
+    person(id: String!): PersonWithCars
     getCarsByPersonId(personId: String!): [Car]!
   }
 
@@ -132,8 +140,12 @@ const resolvers = {
         car: () => carArray,
         getCarsByPersonId: (root, { personId }) => {
             return carArray.filter(car => car.personId === personId);
-        }
-
+        },
+        person: (root, { id }) => {
+            const person = peopleArray.find(person => person.id === id);
+            const cars = carArray.filter(car => car.personId === id);
+            return { ...person, cars };
+        },
     },
     Mutation: {
         addPeople: (root, args) => {

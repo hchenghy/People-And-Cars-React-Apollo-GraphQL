@@ -39,6 +39,24 @@ export const UPDATE_PEOPLE = gql`
     }
   }`
 
+export const GET_PERSON_AND_CARS = gql`
+  query GetPersonAndCars($personId: String!) {
+    person(id: $personId) {
+      id
+      firstName
+      lastName
+      cars {
+        id
+        make
+        model
+        year
+        price
+      }
+    }
+  }
+`;
+
+
 export const GET_CARS = gql`
   {
     car {
@@ -63,6 +81,7 @@ export const GET_CARS_BY_PERSONID = gql`
     }
   }
 `
+
 
 export const ADD_CAR = gql`
   mutation addCar($id: String!, $year: Int!, $make: String!, $model: String!, $price: Float!, $personId: String!) {

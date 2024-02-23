@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, InputNumber } from 'antd';
 import { ADD_CAR, GET_PEOPLES, GET_CARS_BY_PERSONID } from "../../graphql/queries";
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation, useQuery } from '@apollo/client';
@@ -10,7 +10,6 @@ const AddCar = () => {
     const styles = getStyles();
     const [form] = Form.useForm();
     const [, forceUpdate] = useState();
-    const [id] = useState(uuidv4());
     const [people, setPeople] = useState([]);
     const [personId, setPersonId] = useState('');
     const [addCar] = useMutation(ADD_CAR);
@@ -26,6 +25,7 @@ const AddCar = () => {
         setPersonId(value);
     };
 
+    const id = uuidv4();
     const onFinish = values => {
         addCar({
             variables: {
@@ -40,6 +40,10 @@ const AddCar = () => {
         });
         form.resetFields();
     };
+
+    if (!people || people.length === 0) {
+        return "Please add people.";
+    }
 
     return (
         <Form
@@ -70,7 +74,14 @@ const AddCar = () => {
             <Form.Item
                 label='Price:'
                 name='price' rules={[{ required: true, message: 'Please enter price' }]}>
-                <Input placeholder='$' />
+                <InputNumber
+                    placeholder='Price'
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                    min={0} // Optional: Ensure the minimum value is 0
+                />
             </Form.Item>
 
             <Form.Item
@@ -80,7 +91,6 @@ const AddCar = () => {
                 <Select
                     placeholder='Select a person'
                     onChange={handleChange}
-                    allowClear
                 >
                     {people.map(person => (
                         <Option key={person.id} value={person.id}>
@@ -111,8 +121,8 @@ const AddCar = () => {
 
 const getStyles = () => ({
     form: {
-        marginBottom: '40px',
-        justifyContent: 'center'
+        paddingBottom: '40px',
+        justifyContent: 'center',
     }
 });
 

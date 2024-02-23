@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, Form, Input, Select, InputNumber } from 'antd'
 import { useMutation, useQuery } from '@apollo/client'
 import { GET_CARS_BY_PERSONID, GET_PEOPLES, UPDATE_CAR } from '../../graphql/queries'
 
@@ -108,8 +108,17 @@ const UpdateCar = props => {
       </Form.Item>
       <Form.Item
         label='Price:'
-        name='price' rules={[{ required: true, message: 'Please enter price' }]}>
-        <Input placeholder='$' />
+        name='price'
+        rules={[{ required: true, message: 'Please enter price' }]}
+      >
+        <InputNumber
+          placeholder='Price'
+          formatter={(value) =>
+            `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
+          parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+          min={0} 
+        />
       </Form.Item>
       <Form.Item
         name='personId'
