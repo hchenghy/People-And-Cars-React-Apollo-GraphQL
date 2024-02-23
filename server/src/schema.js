@@ -107,7 +107,7 @@ const typeDefs = `
     make: String!
     model: String!
     price: Float!
-    personId: String
+    personId: String!
   }
   
   type Query {

@@ -1,56 +1,45 @@
-import { useState, useEffect } from "react"
-import { Form, Input, Button, Dropdown } from 'antd';
-import { ADD_CAR, GET_CARS } from "../../graphql/queries";
-import { v4 as uuidv4 } from 'uuid'
-import { useMutation } from '@apollo/client'
+import { useState, useEffect } from "react";
+import { Form, Input, Button, Select } from 'antd';
+import { ADD_CAR, GET_PEOPLES, GET_CARS_BY_PERSONID } from "../../graphql/queries";
+import { v4 as uuidv4 } from 'uuid';
+import { useMutation, useQuery } from '@apollo/client';
 
+const { Option } = Select;
 
 const AddCar = () => {
-    const styles = getStyles()
-    const [form] = Form.useForm()
-    const [, forceUpdate] = useState()
-
-    const [addCar] = useMutation(ADD_CAR)
+    const styles = getStyles();
+    const [form] = Form.useForm();
+    const [, forceUpdate] = useState();
+    const [id] = useState(uuidv4());
+    const [people, setPeople] = useState([]);
+    const [personId, setPersonId] = useState('');
+    const [addCar] = useMutation(ADD_CAR);
+    const { data } = useQuery(GET_PEOPLES);
 
     useEffect(() => {
-        forceUpdate({})
-    }, [])
+        if (data && data.people) {
+            setPeople(data.people);
+        }
+    }, [data]);
+
+    const handleChange = value => {
+        setPersonId(value);
+    };
 
     const onFinish = values => {
-        const {
-            year,
-            make,
-            model,
-            price,
-            personId
-        } = values
-        const id = uuidv4();
-
         addCar({
             variables: {
                 id,
-                year,
-                make,
-                model,
-                price,
+                make: values.make,
+                model: values.model,
+                year: parseInt(values.year),
+                price: parseFloat(values.price),
                 personId
             },
-            update: (cache, { data: { addCar } }) => {
-                const data = cache.readQuery({ query: GET_CARS });
-                if (data && data.car) {
-                    cache.writeQuery({
-                        query: GET_CARS,
-                        data: {
-                            ...data,
-                            contacts: [...data.car, addCar]
-                        }
-                    });
-                }
-            }
+            refetchQueries: [{ query: GET_CARS_BY_PERSONID, variables: { personId } }]
         });
-
-    }
-
+        form.resetFields();
+    };
 
     return (
         <Form
@@ -84,6 +73,24 @@ const AddCar = () => {
                 <Input placeholder='$' />
             </Form.Item>
 
+            <Form.Item
+                name='personId'
+                rules={[{ required: true, message: 'Please select a person' }]}
+            >
+                <Select
+                    placeholder='Select a person'
+                    onChange={handleChange}
+                    allowClear
+                >
+                    {people.map(person => (
+                        <Option key={person.id} value={person.id}>
+                            {person.firstName} {person.lastName}
+                        </Option>
+                    ))}
+                </Select>
+            </Form.Item>
+
+
             <Form.Item shouldUpdate={true}>
                 {() => (
                     <Button
@@ -99,14 +106,14 @@ const AddCar = () => {
                 )}
             </Form.Item>
         </Form>
-    )
-}
+    );
+};
 
 const getStyles = () => ({
     form: {
         marginBottom: '40px',
         justifyContent: 'center'
     }
-})
+});
 
-export default AddCar
+export default AddCar;

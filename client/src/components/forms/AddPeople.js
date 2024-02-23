@@ -33,10 +33,11 @@ const AddPeople = () => {
                         query: GET_PEOPLES,
                         data: {
                             ...data,
-                            contacts: [...data.people, addPeople]
+                            people: [...data.people, addPeople]
                         }
                     });
                 }
+                form.resetFields()
             }
         });
 
@@ -51,7 +52,6 @@ const AddPeople = () => {
             size='large'
             form={form}
             onFinish={onFinish}
-
         >
             <Form.Item
                 label='First Name:'

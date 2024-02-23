@@ -6,6 +6,7 @@ import UpdatePeople from '../forms/UpdatePeople'
 import RemovePeople from '../forms/RemovePeople'
 import { GET_CARS_BY_PERSONID } from '../../graphql/queries'
 import { useQuery } from '@apollo/client';
+import CarCard from './CarCard'
 
 const PeopleCard = props => {
   const [editMode, setEditMode] = useState(false)
@@ -25,6 +26,7 @@ const PeopleCard = props => {
   if (error) return `Error: ${error.message}`;
 
   const cars = data && data.getCarsByPersonId;
+  console.log(cars)
 
   return (
     <div>
@@ -45,16 +47,11 @@ const PeopleCard = props => {
         >
           <div>
             <p>{firstName} {lastName}</p>
-            {cars.length > 0 && (
+            {cars && (
               <div>
-                <p>Cars Owned:</p>
-                <ul>
-                  {cars.map(car => (
-                    <li key={car.id}>
-                      {car.year} {car.make} {car.model} - ${car.price}
-                    </li>
-                  ))}
-                </ul>
+                {cars.map(car => (
+                  <CarCard key={car.id} car={car} />
+                ))}
               </div>
             )}
           </div>
@@ -66,7 +63,7 @@ const PeopleCard = props => {
 
 const getStyles = () => ({
   card: {
-    width: '500px',
+    width: '100%',
     // display: 'flex',
     // justifyContent: 'center'
   }

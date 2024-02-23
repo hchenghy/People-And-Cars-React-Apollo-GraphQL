@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import { Button, Form, Input } from 'antd'
-import { useMutation } from '@apollo/client'
-import { UPDATE_CAR } from '../../graphql/queries'
+import { Button, Form, Input, Select } from 'antd'
+import { useMutation, useQuery } from '@apollo/client'
+import { GET_PEOPLES, UPDATE_CAR } from '../../graphql/queries'
 
 const UpdateCar = props => {
+  const { Option } = Select;
   const styles = getStyles()
-  const { id,
+  const [people, setPeople] = useState([]);
+  const {
+    id,
     year,
     make,
     model,
@@ -16,6 +19,17 @@ const UpdateCar = props => {
   const [, forceUpdate] = useState()
 
   const [updateCar] = useMutation(UPDATE_CAR)
+  const { data } = useQuery(GET_PEOPLES);
+
+  useEffect(() => {
+    if (data && data.people) {
+      setPeople(data.people);
+    }
+  }, [data]);
+
+  const handleChange = value => {
+    personId = value;
+  };
 
   const onFinish = values => {
     const {
@@ -23,16 +37,15 @@ const UpdateCar = props => {
       make,
       model,
       price,
-      personId
     } = values
 
     updateCar({
       variables: {
         id,
-        year,
+        year: parseInt(year),
         make,
         model,
-        price,
+        price: parseFloat(price),
         personId
       }
     })
@@ -48,14 +61,12 @@ const UpdateCar = props => {
       name='update-car-form'
       layout='inline'
       style={styles.form}
-      form={form}
       onFinish={onFinish}
       initialValues={{
         year,
         make,
         model,
         price,
-        personId
       }}
     >
       <Form.Item
@@ -80,23 +91,25 @@ const UpdateCar = props => {
         name='price' rules={[{ required: true, message: 'Please enter price' }]}>
         <Input placeholder='$' />
       </Form.Item>
-      <Form.Item shouldUpdate={true}>
-        {() => (
-          <Button
-            form={form}
-            type='primary'
-            htmlType='submit'
-            disabled={
-              (!form.isFieldTouched('firstName') && !form.isFieldTouched('lastName')) ||
-              form.getFieldsError().filter(({ errors }) => errors.length).length
-            }
-          >
-            Update Car
-          </Button>
-        )}
+      <Form.Item>
+        <Select
+          placeholder='Select a person'
+          onChange={handleChange}
+          allowClear
+          defaultValue={people.map(person=>(person))}
+        >
+          {people.map(person => (
+            <Option key={person.id} value={person.id}>
+              {person.firstName} {person.lastName}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
+      <Button htmlType='submit'>
+        Update Car
+      </Button>
       <Button onClick={props.onButtonClick}>Cancel</Button>
-    </Form>
+    </Form >
   )
 }
 

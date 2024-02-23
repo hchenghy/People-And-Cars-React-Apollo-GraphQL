@@ -53,7 +53,7 @@ export const GET_CARS = gql`
 
 export const GET_CARS_BY_PERSONID = gql`
   query GetCarsByPersonId($personId: String!) {
-    cars(where: { personId: { eq: $personId } }) {
+    getCarsByPersonId(personId: $personId) {
       id
       year
       make

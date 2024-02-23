@@ -27,7 +27,6 @@ function App() {
         <AddCar />
         <Subtitle subtitle="Record" />
         <People />
-        <CarsOwnedByPeople />
 
       </div>
     </ApolloProvider>
