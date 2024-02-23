@@ -1,37 +1,39 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { useMutation } from "@apollo/client";
-import { GET_CARS, REMOVE_CAR, GET_CARS_BY_PERSONID } from "../../graphql/queries";
-import filter from "lodash.filter";
+import { REMOVE_CAR, GET_CARS_BY_PERSONID } from "../../graphql/queries";
 
 const RemoveCar = ({ id }) => {
+
   const [removeCar] = useMutation(REMOVE_CAR, {
     update(cache, { data: { removeCar } }) {
-      const { car } = cache.readQuery({ query: GET_CARS });
-      const filteredCar = filter(car, car => car.id !== id);
-      cache.writeQuery({
-        query: GET_CARS,
-        data: { car: filteredCar },
-      });
+      try {
+        const existingData = cache.readQuery({ query: GET_CARS_BY_PERSONID, variables: { personId: removeCar.personId } });
+        if (!existingData) return;
+
+        const updatedCars = existingData.GetCarsByPersonId.filter(car => car.id !== removeCar.id);
+        cache.writeQuery({
+          query: GET_CARS_BY_PERSONID,
+          variables: { personId: removeCar.personId },
+          data: { GetCarsByPersonId: updatedCars },
+        });
+      } catch (error) {
+        console.error('Error updating cache:', error);
+      }
     },
   });
 
-  const handleButtonClick = () => {
-    let result = window.confirm("Are you sure you want to delete this car?");
-
-    if (result) {
-      removeCar({
-        variables: {
-          id,
-        },
-      });
+  const handleDelete = () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this car?');
+    if (confirmDelete) {
+      removeCar({ variables: { id } });
     }
   };
 
   return (
     <DeleteOutlined
-      key="delete"
-      style={{ color: "red" }}
-      onClick={handleButtonClick}
+      key='delete'
+      style={{ color: 'red' }}
+      onClick={handleDelete}
     />
   );
 };

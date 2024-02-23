@@ -104,7 +104,6 @@ export const REMOVE_CAR = gql`
     make
     model
     price
-    personId
   }
 }
 `

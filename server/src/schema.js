@@ -211,8 +211,8 @@ const resolvers = {
             if (!removeCar) {
                 throw new Error("no car")
             }
-            remove(carArray, c => {
-                return c.id === removeCar.id
+            remove(carArray, (car) => {
+                return car.id === removeCar.id
             })
 
             return removeCar
