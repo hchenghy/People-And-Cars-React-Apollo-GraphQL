@@ -15,7 +15,7 @@ const getStyles = () => ({
     },
 
     title: {
-        fontSize: 20,
+        fontSize: 25,
         padding: '30px 0 50px 0',
 
     }

@@ -5,7 +5,7 @@ const Subtitle = ({ subtitle }) => {
 
 const getStyles = () => ({
     subtitle: {
-        fontSize: 18,
+        fontSize: 20,
         padding: '30px 0',
         // marginBottom: '20px',
     }
