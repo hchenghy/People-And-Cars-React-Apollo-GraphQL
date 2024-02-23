@@ -5,10 +5,10 @@ import { GET_CARS_BY_PERSONID, GET_PEOPLES, UPDATE_CAR } from '../../graphql/que
 
 const UpdateCar = props => {
   const { Option } = Select;
-  const styles = getStyles()
   const { data: peopleData } = useQuery(GET_PEOPLES);
-
-
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const styles = getStyles(isHovered)
   const [people, setPeople] = useState([]);
   const {
     id,
@@ -117,7 +117,7 @@ const UpdateCar = props => {
             `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
           }
           parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-          min={0} 
+          min={0}
         />
       </Form.Item>
       <Form.Item
@@ -136,7 +136,9 @@ const UpdateCar = props => {
           ))}
         </Select>
       </Form.Item>
-      <Button htmlType='submit'>
+      <Button htmlType='submit' style={styles.submitBtn} onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}>
+
         Update Car
       </Button>
       <Button onClick={props.onButtonClick}>Cancel</Button>
@@ -144,10 +146,18 @@ const UpdateCar = props => {
   )
 }
 
-const getStyles = () => ({
+const getStyles = (isHovered) => ({
   form: {
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+    padding: '10px'
+
+  },
+  submitBtn: {
+    transition: 'background-color 0.3s ease',
+    color: 'white',
+    backgroundColor: isHovered ? '#3F96FE' : '#1777ff',
+  },
+
 })
 
 export default UpdateCar

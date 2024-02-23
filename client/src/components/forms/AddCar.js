@@ -59,17 +59,17 @@ const AddCar = () => {
                 name='year'
                 rules={[{ required: true, message: 'Please enter year' }]}
             >
-                <Input placeholder='Year' />
+                <Input placeholder='Year'  />
             </Form.Item>
             <Form.Item
                 label='Make:'
                 name='make' rules={[{ required: true, message: 'Please enter make' }]}>
-                <Input placeholder='Make' />
+                <Input placeholder='Make'  />
             </Form.Item>
             <Form.Item
                 label='Model:'
                 name='model' rules={[{ required: true, message: 'Please enter model' }]}>
-                <Input placeholder='Model' />
+                <Input placeholder='Model'  />
             </Form.Item>
             <Form.Item
                 label='Price:'
@@ -80,7 +80,7 @@ const AddCar = () => {
                         `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                     }
                     parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                    min={0} // Optional: Ensure the minimum value is 0
+                    min={0}
                 />
             </Form.Item>
 
@@ -91,9 +91,10 @@ const AddCar = () => {
                 <Select
                     placeholder='Select a person'
                     onChange={handleChange}
+                    styles={{ borderRadius: '0 !important' }}
                 >
                     {people.map(person => (
-                        <Option key={person.id} value={person.id}>
+                        <Option key={person.id} value={person.id} >
                             {person.firstName} {person.lastName}
                         </Option>
                     ))}
@@ -104,6 +105,7 @@ const AddCar = () => {
             <Form.Item shouldUpdate={true}>
                 {() => (
                     <Button
+                        
                         type='primary'
                         htmlType='submit'
                         disabled={
@@ -123,7 +125,8 @@ const getStyles = () => ({
     form: {
         paddingBottom: '40px',
         justifyContent: 'center',
-    }
+    },
+
 });
 
 export default AddCar;
