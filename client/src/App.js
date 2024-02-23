@@ -10,6 +10,9 @@ import AddCar from './components/forms/AddCar';
 import People from './components/lists/People'
 import UpdatePeople from './components/forms/UpdatePeople';
 import CarsOwnedByPeople from './components/lists/CarsOwnedByPeople';
+import HomePage from './components/pages/Home';
+import PeoplePage from './components/pages/PeoplePage';
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -19,16 +22,12 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <div className="App">
-        <Title />
-        <Subtitle subtitle="Add Person" />
-        <AddPerson />
-        <Subtitle subtitle="Add Car" />
-        <AddCar />
-        <Subtitle subtitle="Record" />
-        <People />
-
-      </div>
+      <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/people/:id" element={<PeoplePage />} />
+      </Routes>
+      </BrowserRouter>
     </ApolloProvider>
   );
 }

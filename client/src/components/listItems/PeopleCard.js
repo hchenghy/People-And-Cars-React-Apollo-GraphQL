@@ -1,21 +1,22 @@
-import { useState } from 'react'
-import { Card } from 'antd'
-import { REMOVE_PEOPLE } from '../../graphql/queries'
-import { EditOutlined } from '@ant-design/icons'
-import UpdatePeople from '../forms/UpdatePeople'
-import RemovePeople from '../forms/RemovePeople'
-import { GET_CARS_BY_PERSONID } from '../../graphql/queries'
+import React, { useState } from 'react';
+import { Card, Button } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
-import CarCard from './CarCard'
+import { GET_CARS_BY_PERSONID } from '../../graphql/queries';
+import UpdatePeople from '../forms/UpdatePeople';
+import RemovePeople from '../forms/RemovePeople';
+import CarCard from './CarCard';
+import { useNavigate } from 'react-router-dom';
 
-const PeopleCard = props => {
-  const [editMode, setEditMode] = useState(false)
-  const styles = getStyles()
-  const { id, firstName, lastName } = props
+const PeopleCard = ({ id, firstName, lastName }) => {
+  const [editMode, setEditMode] = useState(false);
+  const [showAllCars, setShowAllCars] = useState(false);
+  const styles = getStyles();
+  const navigate = useNavigate()
 
   const handleButtonClick = () => {
-    setEditMode(!editMode)
-  }
+    setEditMode(!editMode);
+  };
 
   // Fetch cars data for the specific person
   const { loading, error, data } = useQuery(GET_CARS_BY_PERSONID, {
@@ -26,7 +27,7 @@ const PeopleCard = props => {
   if (error) return `Error: ${error.message}`;
 
   const cars = data && data.getCarsByPersonId;
-  console.log(cars)
+  const displayCars = showAllCars ? cars : cars.slice(0, 3);
 
   return (
     <div>
@@ -42,31 +43,36 @@ const PeopleCard = props => {
           style={styles.card}
           actions={[
             <EditOutlined key='edit' onClick={handleButtonClick} />,
-            <RemovePeople id={id} />
+            <RemovePeople id={id} />,
           ]}
         >
           <div>
             <p>{firstName} {lastName}</p>
-            {cars && (
+            {displayCars && (
               <div>
-                {cars.map(car => (
+                {displayCars.map(car => (
                   <CarCard key={car.id} car={car} />
                 ))}
               </div>
+            )}
+            {cars.length > 3 && (
+              <a onClick={() => navigate(`/people/${id}`)}>
+                Learn More
+              </a>
             )}
           </div>
         </Card>
       )}
     </div>
-  )
-}
+  );
+};
 
 const getStyles = () => ({
   card: {
     width: '100%',
-    // display: 'flex',
-    // justifyContent: 'center'
-  }
-})
+    borderRadius: '0px',
+    textAlign: 'left'
+  },
+});
 
-export default PeopleCard
+export default PeopleCard;

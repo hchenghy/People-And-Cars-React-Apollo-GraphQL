@@ -1,20 +1,19 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { useMutation } from "@apollo/client";
-import { GET_CARS, REMOVE_CAR } from "../../graphql/queries";
+import { GET_CARS, REMOVE_CAR, GET_CARS_BY_PERSONID } from "../../graphql/queries";
 import filter from "lodash.filter";
 
-const RemoveContact = ({ id }) => {
+const RemoveCar = ({ id }) => {
+
+
   const [removeCar] = useMutation(REMOVE_CAR, {
     update(cache, { data: { removeCar } }) {
-      const { cars } = cache.readQuery({ query: GET_CARS });
-
+      const { car } = cache.readQuery({ query: GET_CARS })|| { car: [] };
+      const filteredCar = filter(car, car => car.id !== id);
+      
       cache.writeQuery({
         query: GET_CARS,
-        data: {
-          cars: filter(cars, (c) => {
-            return c.id !== removeCar.id;
-          }),
-        },
+        data: { car: filteredCar },
       });
     },
   });
@@ -40,4 +39,4 @@ const RemoveContact = ({ id }) => {
   );
 };
 
-export default RemoveContact;
+export default RemoveCar;

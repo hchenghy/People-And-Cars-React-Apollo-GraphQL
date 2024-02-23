@@ -30,8 +30,8 @@ const People = () => {
 
 const getStyles = () => ({
     list: {
-        display: 'flex',
-        justifyContent: 'center'
+        // display: 'flex',
+        // justifyContent: 'center'
     }
 })
 

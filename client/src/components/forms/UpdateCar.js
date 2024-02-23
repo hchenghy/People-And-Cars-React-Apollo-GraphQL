@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import { useMutation, useQuery } from '@apollo/client'
-import { GET_PEOPLES, UPDATE_CAR } from '../../graphql/queries'
+import { GET_CARS_BY_PERSONID, GET_PEOPLES, UPDATE_CAR } from '../../graphql/queries'
 
 const UpdateCar = props => {
   const { Option } = Select;
   const styles = getStyles()
+  const { data: peopleData } = useQuery(GET_PEOPLES);
+
+
   const [people, setPeople] = useState([]);
   const {
     id,
@@ -16,19 +19,35 @@ const UpdateCar = props => {
     personId
   } = props
   const [form] = Form.useForm()
+  const [selectedPersonId, setSelectedPersonId] = useState(personId);
+
   const [, forceUpdate] = useState()
 
-  const [updateCar] = useMutation(UPDATE_CAR)
+  const [updateCar] = useMutation(UPDATE_CAR, {
+    refetchQueries: [
+      { query: GET_CARS_BY_PERSONID, variables: { personId: selectedPersonId } },
+      { query: GET_CARS_BY_PERSONID, variables: { personId } }
+    ],
+    onCompleted: () => {
+      setSelectedPersonId(personId);
+    }
+  });
   const { data } = useQuery(GET_PEOPLES);
 
   useEffect(() => {
-    if (data && data.people) {
-      setPeople(data.people);
+    if (peopleData && peopleData.people) {
+      form.setFieldsValue({
+        year,
+        make,
+        model,
+        price,
+        personId: selectedPersonId
+      });
     }
-  }, [data]);
+  }, [peopleData, selectedPersonId]);
 
   const handleChange = value => {
-    personId = value;
+    setSelectedPersonId(value);
   };
 
   const onFinish = values => {
@@ -46,7 +65,7 @@ const UpdateCar = props => {
         make,
         model,
         price: parseFloat(price),
-        personId
+        personId: selectedPersonId
       }
     })
     props.onButtonClick()
@@ -67,6 +86,7 @@ const UpdateCar = props => {
         make,
         model,
         price,
+        personId
       }}
     >
       <Form.Item
@@ -91,14 +111,16 @@ const UpdateCar = props => {
         name='price' rules={[{ required: true, message: 'Please enter price' }]}>
         <Input placeholder='$' />
       </Form.Item>
-      <Form.Item>
+      <Form.Item
+        name='personId'
+        rules={[{ required: true, message: 'Please select a person' }]}
+      >
         <Select
           placeholder='Select a person'
           onChange={handleChange}
           allowClear
-          defaultValue={people.map(person=>(person))}
         >
-          {people.map(person => (
+          {peopleData && peopleData.people && peopleData.people.map(person => (
             <Option key={person.id} value={person.id}>
               {person.firstName} {person.lastName}
             </Option>

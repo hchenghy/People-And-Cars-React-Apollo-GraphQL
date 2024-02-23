@@ -9,7 +9,7 @@ const CarCard = ({ car }) => {
     const styles = getStyles()
     const [editMode, setEditMode] = useState(false)
 
-    const { id, year, make, model, price, personId } = car
+    const { id, year, make, model, price, personId, setIsRefresh } = car
 
     const handleButtonClick = () => {
         setEditMode(!editMode)
@@ -33,7 +33,7 @@ const CarCard = ({ car }) => {
                     actions={[
                         <EditOutlined key='edit' onClick={handleButtonClick} />,
                         <RemoveCar id={id} />
-                        
+
                     ]}
                 >
                     {year} {make} {model} - &gt; ${price}
@@ -45,7 +45,7 @@ const CarCard = ({ car }) => {
 
 const getStyles = () => ({
     card: {
-        width: '500px',
+        // width: '500px',
         textAlign: 'left',
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderRadius: "0",
