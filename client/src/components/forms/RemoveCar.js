@@ -6,15 +6,18 @@ const RemoveCar = ({ id }) => {
 
   const [removeCar] = useMutation(REMOVE_CAR, {
     update(cache, { data: { removeCar } }) {
+      console.log(removeCar)
       try {
-        const existingData = cache.readQuery({ query: GET_CARS_BY_PERSONID, variables: { personId: removeCar.personId } });
-        if (!existingData) return;
+        const originalData = cache.readQuery({ query: GET_CARS_BY_PERSONID, variables: { personId: removeCar.personId } });
+        console.log(originalData)
+        if (!originalData) return;
 
-        const updatedCars = existingData.GetCarsByPersonId.filter(car => car.id !== removeCar.id);
+        const updatedCars = originalData.getCarsByPersonId.filter(car => car.id !== removeCar.id);
+        console.log(updatedCars)
         cache.writeQuery({
           query: GET_CARS_BY_PERSONID,
           variables: { personId: removeCar.personId },
-          data: { GetCarsByPersonId: updatedCars },
+          data: { getCarsByPersonId: updatedCars },
         });
       } catch (error) {
         console.error('Error updating cache:', error);
